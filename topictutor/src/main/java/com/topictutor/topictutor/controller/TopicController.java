@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.topictutor.topictutor.model.Topic;
 import com.topictutor.topictutor.service.TopicService;
+import com.topictutor.topictutor.service.YouTubeService;
 
 @RestController
 @RequestMapping("/topics")
@@ -22,6 +23,9 @@ public class TopicController {
 
     @Autowired
     private TopicService topicService;
+
+    @Autowired
+    private YouTubeService youTubeService;
 
     // Create new topic
     @PostMapping
@@ -45,5 +49,13 @@ public class TopicController {
     @DeleteMapping("/{id}")
     public void deleteTopic(@PathVariable Long id) {
         topicService.deleteTopic(id);
+    }
+
+    // Get AI explanation or video suggestions for a topic (now real YouTube links)
+    @GetMapping("/{id}/explanation")
+    public List<String> getTopicExplanations(@PathVariable Long id) {
+        Topic topic = topicService.getTopicById(id);
+        String title = topic.getTitle();
+        return youTubeService.getVideoLinks(title);
     }
 }
